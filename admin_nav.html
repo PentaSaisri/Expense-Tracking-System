@@ -1,0 +1,19 @@
+<style>
+    nav {
+        padding: 0rem 1rem;
+    }
+</style>
+<nav style="background-color: #198b73;">
+    <div class="nav-wrapper">
+        <a href="/" class="brand-logo">Dashboard</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            {% if check and check['userType'] == "ORG" %}
+            <li><a href="#" style="display: flex; align-items: center;"> <i class="material-icons" style="margin-right: 4px;">attach_money</i><span class="white-text" style="font-weight: 500;margin-right: 4px;">{{ check.organization.available_budget | round(2) }}</span> </a></li>
+            <li><a href="/income" style="display: flex; align-items: center;"> <i class="material-icons" style="margin-right: 4px;">control_point</i>Income</a></li>
+            <li><a href="/expenses" style="display: flex; align-items: center;"> <i class="material-icons" style="margin-right: 4px;">account_balance</i>Expenses Management</a></li>
+            {% endif %}
+            <li><a href="/category" style="display: flex; align-items: center;"> <i class="material-icons" style="margin-right: 4px;">list</i>Category Management</a></li>
+            <li><a href="/logout" style="display: flex; align-items: center;"> <i class="material-icons" style="margin-right: 4px;">power_settings_new</i>Logout</a></li>
+        </ul>
+    </div>
+</nav>

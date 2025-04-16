@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        #email,
+        #password {
+            padding: 0rem 1rem;
+            margin: 0.5rem 0rem;
+        }
+
+        .tabs {
+            list-style-type: none;
+            padding: 0;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+        }
+
+        .tab {
+            background-color: rgba(42, 175, 124, 0.384) !important;
+            float: left;
+            margin-right: 2px;
+        }
+
+        .indicator {
+            background-color: rgb(43, 43, 43) !important;
+            height: 4px !important;
+        }
+
+        .tab a {
+            display: block;
+            color: #000000 !important;
+            padding: 10px 15px;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: none !important;
+            font-size: 16px !important;
+        }
+
+        .tab a.active {
+            color: #fff !important;
+            background-color: #198b73 !important;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+        }
+
+        .tab a:hover {
+            background-color: #ffffff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row" style="margin-top: 1rem;">
+            <div class="col s3"></div>
+            <div class="col s6">
+                <form id="loginForm" action="/" method="post" class="col s12">
+                    <div class="row" style="text-align: center;">
+                        <div class="col s12">
+                            <ul class="tabs ">
+                                <li class="tab col s6"><a href="#organization">Organization</a></li>
+                                <li class="tab col s6"><a class="active" href="#admin">Admin</a></li>
+                            </ul>
+                            <input type="hidden" id="selectedTab" name="selectedTab" value="admin">
+                        </div>
+
+                        <div id="organization" class="col s12" style="margin-top: 1rem;">
+                            <h5>Organization Login</h5>
+                        </div>
+                        <div id="admin" class="col s12" style="margin-top: 1rem;">
+                            <h5>Admin Login</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="email" type="email" name="email" class="validate" required>
+                            <label for="email">Email</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="password" type="password" name="password" class="validate" required>
+                            <label for="password">Password</label>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; ">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Login</button>
+                        <a href="/signup">
+                            <button class="btn waves-effect waves-light red" type="button" style="margin-left: 1rem;">Sign up</button>
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="col s3"></div>
+        </div>
+    </div>
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.tabs').tabs();
+
+            var toastHTML = '{{ error }}';
+            if (toastHTML && toastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: toastHTML, classes: "red rounded" });
+                }, 100)
+
+
+            var successToastHTML = '{{ success }}';
+            if (successToastHTML && successToastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: successToastHTML, classes: "green rounded" });
+                }, 100)
+
+
+
+            const tabs = document.querySelectorAll('.tabs li.tab a');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function (event) {
+                    const selectedTab = event.target.getAttribute('href').replace('#', '');
+                    document.getElementById('selectedTab').value = selectedTab;
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

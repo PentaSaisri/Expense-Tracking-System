@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body>
+    {% include "admin_nav.html" %}
+    <div style="width: 100%; padding: 1rem;">
+        <h4>Welcome {{organization.name}}</h4>
+        <div class="row">
+            <div class="col m12 card">
+                <div id="expenses_chart"></div>
+            </div>
+
+            <div class="col m12 card">
+                <div id="monthly_expenses_chart_pie"></div>
+            </div>
+
+            <div class="col m12 card">
+                <div id="expenses_chart_pie"></div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        var categories = {{ categories | tojson }};
+        var expenses = {{ expenses | tojson }};
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChartPie);
+        google.charts.setOnLoadCallback(drawChartMonthly);
+        function drawChart() {
+            // Assuming categories and expenses are defined earlier in your code
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const firstEle = ['Month', ...months];
+
+            // Create an object to hold amounts for each category
+            const categoryAmounts = {};
+            categories.forEach(category => {
+                categoryAmounts[category.name] = [];
+            });
+
+            // Populate the categoryAmounts object with amounts for each month
+            expenses.forEach(expense => {
+                const month = new Date(expense.date).toLocaleString('default', { month: 'long' });
+                const categoryIndex = categories.findIndex(cat => cat.name === expense.category);
+                if (categoryIndex !== -1) {
+                    const categoryName = categories[categoryIndex].name;
+                    categoryAmounts[categoryName].push({ month, amount: expense.amount });
+                }
+            });
+
+            // Convert categoryAmounts object into an array of arrays for Google Visualization
+            const dataRows = Object.entries(categoryAmounts).map(([category, amounts]) => {
+                const row = [category];
+                months.forEach(month => {
+                    const amount = amounts.find(item => item.month === month);
+                    row.push(amount ? amount.amount : 0);
+                });
+                return row;
+            });
+            // Insert the firstEle row and dataRows into the DataTable
+            var data = google.visualization.arrayToDataTable([
+                firstEle,
+                ...dataRows
+            ]);
+
+
+            var options = {
+                title: 'Monthly Category-wise Expenses',
+                isStacked: false,
+                height: 400,
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('expenses_chart'));
+            chart.draw(data, options);
+        }
+
+        function drawChartPie() {
+            // Assuming categories and expenses are defined earlier in your code
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            // Create an object to hold total amounts for each category
+            const categoryTotals = {};
+            categories.forEach(category => {
+                categoryTotals[category.name] = 0;
+            });
+
+            // Populate the categoryTotals object with total amounts for each category
+            expenses.forEach(expense => {
+                const categoryIndex = categories.findIndex(cat => cat.name === expense.category);
+                if (categoryIndex !== -1) {
+                    const categoryName = categories[categoryIndex].name;
+                    categoryTotals[categoryName] += expense.amount;
+                }
+            });
+            // Convert categoryTotals object into an array of arrays for Google Visualization
+            const dataRows = Object.entries(categoryTotals).map(([category, total]) => [category, total]);
+
+            // Insert the dataRows into the DataTable
+            var data = google.visualization.arrayToDataTable([
+                ['Category', 'Total Amount'],
+                ...dataRows
+            ]);
+
+            var options = {
+                title: 'Total Expenses by Category',
+                height: 500,
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('expenses_chart_pie'));
+            chart.draw(data, options);
+        }
+        function drawChartMonthly() {
+            // Assuming categories and expenses are defined earlier in your code
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            // Create an object to hold total amounts for each month
+            const monthTotals = {};
+            months.forEach(month => {
+                monthTotals[month] = 0;
+            });
+
+            // Populate the monthTotals object with total amounts for each month
+            expenses.forEach(expense => {
+                const expenseDate = new Date(expense.date);
+                const month = months[expenseDate.getMonth()];
+                monthTotals[month] += expense.amount;
+            });
+
+            // Convert monthTotals object into an array of arrays for Google Visualization
+            const dataRows = Object.entries(monthTotals).map(([month, total]) => [month, total]);
+
+            const colors = ['#00ffff', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff', '#800000', '#008000', '#000080', '#808000', '#800080', '#008080'];
+
+            // Insert the dataRows into the DataTable
+            var data = google.visualization.arrayToDataTable([
+                ['Month', 'Total Amount'],
+                ...dataRows
+            ]);
+
+            var options = {
+                title: 'Total Expenses by Month',
+                height: 400,
+                // colors
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('monthly_expenses_chart_pie'));
+            chart.draw(data, options);
+        }
+
+
+    </script>
+
+</body>
+
+</html>

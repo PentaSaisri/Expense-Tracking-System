@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h4>Register an Organization</h4>
+        <form action="/signup" method="post">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="name" type="text" name="name" class="validate" required>
+                    <label for="name">Name</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="mobile" type="number" name="mobile" class="validate" required>
+                    <label for="mobile">Mobile</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="email" type="email" name="email" class="validate" required>
+                    <label for="email">Email</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="password" type="password" name="password" class="validate" required>
+                    <label for="password">Password</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="total_budget" type="number" name="total_budget" class="validate" required>
+                    <label for="total_budget">Total Budget</label>
+                </div>
+            </div>
+            <button type="submit" class="btn green" style="width: 100%;">Register</button>
+            <div style="display: flex; justify-content: end; align-items: center; margin-top: 1rem;">
+                Already have an account? <a href="/" style="margin-left: 4px;">Login</a>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    {% include "admin_nav.html" %}
+    <div style="color: #01172f; padding: 0rem 4rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h4>List of Expenses</h4>
+
+            <a class="waves-effect waves-light btn modal-trigger blue" href="#modal1"
+                style="display: flex;align-items: center;">
+                <i class="material-icons" style="margin-right: 4px;">add</i>
+                Add Expense</a>
+        </div>
+
+        <div id="modal1" class="modal">
+            <div class="modal-content">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+
+                    <h4>Add an expense</h4>
+                    <a href="#!" class="modal-close waves-effect waves-green btn-flat red-text"><i
+                            class="material-icons">close</i></a>
+                </div>
+                <div>
+                    <form action="/expenses/add" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input id="name" type="text" name="name" class="validate" required>
+                                <label for="name">Name</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <select id="category" name="category" required>
+                                    <option value="" disabled selected>Choose a category</option>
+                                    {% for category in categories %}
+                                    {% if category.status %}
+                                    <option value="{{category.id}}">{{category.name}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <label for="category">Category</label>
+                            </div>
+
+                            <div class="input-field col s6">
+                                <input id="amount" step="0.01" type="number" name="amount" class="validate" required>
+                                <label for="amount">Amount</label>
+                            </div>
+
+                            <div class="input-field col s6">
+                                <input id="date" type="date" name="date" class="validate" required>
+                                <label for="date">Date</label>
+                            </div>
+
+                            <div class="input-field col s6">
+                                <textarea id="description" name="description" class="materialize-textarea validate"
+                                    required></textarea>
+                                <label for="description">Description</label>
+                            </div>
+
+                            <div class="file-field input-field col s6">
+                                <div class="btn">
+                                    <span>Upload Image</span>
+                                    <input type="file" id="image" name="image" accept="image/*">
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text" placeholder="Upload an image">
+                                </div>
+                            </div>
+
+                            <div class="input-field col s6">
+                                <button class="btn green" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            {% if expenses | length > 0 %}
+            {% for expense in expenses %}
+            <div class="col s12 m3" style="word-break: break-all;">
+                <div class="card hoverable">
+                    <div class="card-image">
+                        {% if expense.image != None %}
+                        <img src="/static/assets/{{expense.image}}" style="max-height: 20rem;" />
+                        {% else %}
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwrfuFM1mJ3C81T7HmBC-4grVn_2pHmo3anbYisceq7A&s"
+                            style="max-height: 20rem;" />
+                        {% endif %}
+                    </div>
+                    <div class="card-content">
+                        <div>
+                            <h5>
+                                {{expense.name}}
+                                <p class="green-text right">${{expense.amount}}</p>
+                            </h5>
+                            <p style="font-size: 12px;">{{expense.date}}</p>
+                            <p style="color: #303030;" class="truncate">{{expense.description}}</p>
+                        </div>
+                        <div>
+                            <a href="/expenses/delete/{{expense.id}}"
+                                class="btn-floating halfway-fab waves-effect waves-light red"><i
+                                    class="material-icons">delete</i></a>
+                            <a href="#modal-{{expense.id}}"
+                                class="btn-floating halfway-fab waves-effect waves-light blue modal-trigger "
+                                style="margin-right: 3rem;"><i class="material-icons">remove_red_eye</i></a>
+
+                            <div id="modal-{{expense.id}}" class="modal">
+                                <div class="modal-content">
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+
+                                        <h4>{{expense.name}}</h4>
+                                        <a href="#!" class="modal-close waves-effect waves-green btn-flat red-text"><i
+                                                class="material-icons">close</i></a>
+                                    </div>
+                                    <hr>
+                                    <div>
+                                        <h6>Description</h6>
+                                        {{expense.description}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div>
+                <h5>No data found!</h5>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+
+        $(document).ready(function () {
+            $('.modal').modal();
+
+            $(document).ready(function () {
+                $('select').formSelect();
+            });
+            var successToastHTML = '{{ success }}';
+            if (successToastHTML && successToastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: successToastHTML, classes: "green rounded" });
+                }, 100);
+
+            var toastHTML = '{{ error }}';
+            if (toastHTML && toastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: toastHTML, classes: "red rounded" });
+                }, 100)
+
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>

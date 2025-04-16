@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    {% include "admin_nav.html" %}
+    <div style="color: #01172f; padding: 0rem 4rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h4>Add income</h4>
+        </div>
+
+        <form action="/income" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="income" step="0.01" type="number" name="income" class="validate" required>
+                    <label for="income">Income</label>
+                </div>
+
+                <div class="input-field col s6">
+                    <button class="btn green" type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+
+        $(document).ready(function () {
+            $('.modal').modal();
+
+            $(document).ready(function () {
+                $('select').formSelect();
+            });
+            var successToastHTML = '{{ success }}';
+            if (successToastHTML && successToastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: successToastHTML, classes: "green rounded" });
+                }, 100);
+
+            var toastHTML = '{{ error }}';
+            if (toastHTML && toastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: toastHTML, classes: "red rounded" });
+                }, 100)
+
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>

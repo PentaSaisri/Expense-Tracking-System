@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    {% include "admin_nav.html" %}
+    <div style="color: #01172f; padding: 0rem 4rem;">
+        <h4>List of organizations</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Approved</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for organization in all_organizations %}
+                <tr>
+                    <td>{{organization.id}}</td>
+                    <td>{{organization.name}}</td>
+                    <td>{{organization.email}}</td>
+                    <td>{{organization.mobile}}</td>
+                    <td> {% if not organization.approved %}
+                        No
+                        {% else %}
+                        Yes
+                        {% endif %}</td>
+                    <td>
+                        {% if not organization.approved %}
+                        <a href="/admin/organization/approve/{{organization.id}}/True">
+                            <button class="btn green">Approve</button>
+                        </a>
+                        {% else %}
+                        <a href="/admin/organization/approve/{{organization.id}}/False">
+                            <button class="btn red">Block</button>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        $(document).ready(function () {
+            var toastHTML = '{{ error }}';
+            if (toastHTML && toastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: toastHTML, classes: "red rounded" });
+                }, 100)
+
+
+            var successToastHTML = '{{ success }}';
+            if (successToastHTML && successToastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: successToastHTML, classes: "green rounded" });
+                }, 100)
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    {% include "admin_nav.html" %}
+    <div style="color: #01172f; padding: 0rem 4rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h4>List of categories</h4>
+
+            <a class="waves-effect waves-light btn modal-trigger blue" href="#modal1"
+                style="display: flex;align-items: center;">
+                <i class="material-icons" style="margin-right: 4px;">add</i>
+                Add Category</a>
+        </div>
+
+        <div id="modal1" class="modal">
+            <div class="modal-content">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+
+                    <h4>Add a new category</h4>
+                    <a href="#!" class="modal-close waves-effect waves-green btn-flat red-text"><i
+                            class="material-icons">close</i></a>
+                </div>
+                <div>
+                    <form action="/category/add" method="post">
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input id="name" type="text" name="name" class="validate" required>
+                                <label for="name">Name</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <button class="btn green">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            {% if categories | length > 0 %}
+            {% for category in categories %}
+            <div class="col s12 m3">
+                <div class="card">
+                    <div class="card-content">
+                        <div style="display: flex;align-items: center;">
+                            <h5>
+                                {{category.name}}
+                            </h5>
+                            {% if not category.status %}
+                            <div class="left">
+                                <span class="badge red white-text rounded">Deleted</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% if not category.status %}
+                            <a href="/category/delete/{{category.id}}/True"
+                                class="btn-floating halfway-fab waves-effect waves-light green"><i
+                                    class="material-icons">check</i></a>
+                            {% else %}
+                            <a href="/category/delete/{{category.id}}/False"
+                                class="btn-floating halfway-fab waves-effect waves-light red"><i
+                                    class="material-icons">delete</i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div>
+                <h5>No data found!</h5>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+
+        $(document).ready(function () {
+            $('.modal').modal();
+
+            var successToastHTML = '{{ success }}';
+            if (successToastHTML && successToastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: successToastHTML, classes: "green rounded" });
+                }, 100);
+
+            var toastHTML = '{{ error }}';
+            if (toastHTML && toastHTML != "None")
+                setTimeout(() => {
+                    M.toast({ html: toastHTML, classes: "red rounded" });
+                }, 100)
+
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>
